@@ -628,9 +628,6 @@ JML depends on Apache Commons-Math library (commons-math-2.2 or later) and LIBLI
 Note:
 I choose Commons-Math because it supports both dense and sparse matrix and it has a good numerical computation performance by using BlockRealMatrix class in term of both speed and memory. For moderate scaled data, JMLBLAS is faster than JML because it exploits jblas library for basic matrix operations.
 
-Download:
-JML.zip
-
 -----------------------------------
 Author: Mingjie Qian
 Version: 2.4
