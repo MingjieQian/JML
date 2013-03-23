@@ -1,6 +1,6 @@
 JML
 
-JML is a pure Java library for machine learning. There are already several popular java libraries for machine learning or data mining such as Weka or Mallet, but they're not easy to use. The goal of JML is to make machine learning methods easy to use and speed up the code translation from Matlab to Java.
+JML is a pure Java library for machine learning. The goal of JML is to make machine learning methods easy to use and speed up the code translation from MATLAB to Java.
 
 Current version implements logistic regression, Maximum Entropy modeling (MaxEnt), LASSO, KMeans, spectral clustering, Nonnegative Matrix Factorization (NMF), sparse NMF, Latent Semantic Indexing (LSI), Latent Dirichlet Allocation (LDA) (by Gibbs sampling based on LdaGibbsSampler.java by Gregor Heinrich), joint l_{2,1}-norms minimization, Hidden Markov Model (HMM), and Conditional Random Field (CRF)  just for examples of implementing machine learning methods by using this general framework. The SVM package LIBLINEAR is also incorporated. I will try to add more important models such as Markov Random Field (MRF) to this package if I get the time:)
 
