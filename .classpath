@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry kind="lib" path="lib/LIBLINEAR.jar" sourcepath="C:/Aaron/Research/Toolbox/Libraries/Java/LIBLINEAR/src"/>
+	<classpathentry kind="lib" path="lib/commons-math-2.2.jar" sourcepath="C:/Aaron/My Codes/References/Matrix Libraries/Java Matrix/Apache Commons Math/commons-math-2.2/commons-math-2.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jmathplot.jar" sourcepath="C:/Aaron/Research/Toolbox/Libraries/Java/JMathPlot/src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

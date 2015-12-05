@@ -2,13 +2,35 @@ JML
 
 JML is a pure Java library for machine learning. The goal of JML is to make machine learning methods easy to use and speed up the code translation from MATLAB to Java.
 
-Current version implements logistic regression, Maximum Entropy modeling (MaxEnt), LASSO, KMeans, spectral clustering, Nonnegative Matrix Factorization (NMF), sparse NMF, Latent Semantic Indexing (LSI), Latent Dirichlet Allocation (LDA) (by Gibbs sampling based on LdaGibbsSampler.java by Gregor Heinrich), joint l_{2,1}-norms minimization, Hidden Markov Model (HMM), and Conditional Random Field (CRF)  just for examples of implementing machine learning methods by using this general framework. The SVM package LIBLINEAR is also incorporated. I will try to add more important models such as Markov Random Field (MRF) to this package if I get the time:)
+JML v.s. LAML:
+LAML is much faster than JML (more than 3 times faster) due to two implementation considerations. First, LAML allows full control of dense and full matrices and vectors. Second, LAML extensively uses in-place matrix and vector operations thus avoids too much memory allocation and garbage collection.
+
+JML relies on third party linear algebra library, i.e. Apache Commons-math. Sparse matrices and vectors have been deprecated in Commons-math 3.0+, and will be ultimately eliminated. Whereas LAML has its own built-in linear algebra library.
+
+Like JML, LAML also provides a lot of commonly used matrix functions in the same signature to Matlab, thus can also be used to manually convert MATLAB code to Java code.
+
+In short, JML has been replaced by LAML.
+
+Current version implements logistic regression, Maximum Entropy modeling (MaxEnt), AdaBoost, LASSO, KMeans, spectral clustering, Nonnegative Matrix Factorization (NMF), sparse NMF, Latent Semantic Indexing (LSI), Latent Dirichlet Allocation (LDA) (by Gibbs sampling based on LdaGibbsSampler.java by Gregor Heinrich), joint l_{2,1}-norms minimization, Hidden Markov Model (HMM), Conditional Random Field (CRF), Robust PCA, Matrix Completion (MC), etc. for examples of implementing machine learning methods by using this general framework. The SVM package LIBLINEAR is also incorporated. I will try to add more important models such as Markov Random Field (MRF) to this package if I get the time:)
 
 JML library's another advantage is its complete independence from feature engineering, thus any preprocessed data could be run. For example, in the area of natural language processing, feature engineering is a crucial part for MaxEnt, HMM, and CRF to work well and is often embedded in model training. However, we believe that it is better to separate feature engineering and parameter estimation. On one hand, modularization could be achieved so that people can simply focus on one module without need to consider other modules; on the other hand, implemented modules could be reused without incompatibility concerns.
 
-JML also provides implementations of several efficient, scalable, and widely used general purpose optimization algorithms, which are very important for machine learning methods be applicable on large scaled data, though particular optimization strategy that considers the characteristics of a particular problem is more effective and efficient (e.g., dual coordinate descent for bound constrained quadratic programming in SVM). Currently supported optimization algorithms are limited-memory BFGS, projected limited-memory BFGS (non-negative constrained or bound constrained), nonlinear conjugate gradient, primal-dual interior-point method, accelerated proximal gradient, and accelerated gradient descent. I would always like to implement more practical efficient optimization algorithms.
+JML also provides implementations of several efficient, scalable, and widely used general purpose optimization algorithms, which are very important for machine learning methods be applicable on large scaled data, though particular optimization strategy that considers the characteristics of a particular problem is more effective and efficient (e.g., dual coordinate descent for bound constrained quadratic programming in SVM). Currently supported optimization algorithms are limited-memory BFGS, projected limited-memory BFGS (non-negative constrained or bound constrained), nonlinear conjugate gradient, primal-dual interior-point method, general quadratic programming, accelerated proximal gradient, and accelerated gradient descent. I would always like to implement more practical efficient optimization algorithms.
+
+Several dimensionality reduction algorithms are implemented, they are PCA, kernel PCA, Multi-dimensional Scaling (MDS), Isomap, and Locally Linear Embedding (LLE).
+
+Two online classification algorithms are incorporated, they are Perceptron and Winnow.
 
 I hope this library could help engineers and researchers speed up their productivity cycle.
+
+JML v.s. LAML
+LAML is much faster than JML due to two implementation considerations. First, LAML allows full control of dense and full matrices and vectors. Second, LAML extensively uses in-place matrix and vector operations thus avoids too much memory allocation and garbage collection.
+
+JML relies on third party linear algebra library, i.e. Apache Commons-math. Sparse matrices and vectors have been deprecated in Commons-math 3.0+, and will be ultimately eliminated. Whereas LAML has its own built-in linear algebra library.
+
+Like JML, LAML also provides a lot of commonly used matrix functions in the same signature to Matlab, thus can also be used to manually convert MATLAB code to Java code.
+
+In short, JML will be completely replaced by LAML soon.
 
 Documentation:
 For more details about JML API, please refer to the online documentation.
@@ -18,13 +40,13 @@ Examples:
 # Multi-class SVM (linear kernel)
 
 double[][] data = { {3.5, 4.4, 1.3},
-                             {5.3, 2.2, 0.5},
-                             {0.2, 0.3, 4.1},
-                             {-1.2, 0.4, 3.2} };
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {-1.2, 0.4, 3.2} };
 
 double[][] labels = { {1, 0, 0},
-                                {0, 1, 0},
-                                {0, 0, 1} };
+                      {0, 1, 0},
+                      {0, 0, 1} };
 
 double C = 1;
 double eps = 0.01;
@@ -58,13 +80,13 @@ display(Y_pred);
 # Multi-class Logistic Regression
 
 double[][] data = { {3.5, 4.4, 1.3},
-                             {5.3, 2.2, 0.5},
-                             {0.2, 0.3, 4.1},
-                             {-1.2, 0.4, 3.2} };
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {-1.2, 0.4, 3.2} };
 
 double[][] labels = { {1, 0, 0},
-                                {0, 1, 0},
-                                {0, 0, 1} };
+                      {0, 1, 0},
+                      {0, 0, 1} };
 
 Options options = new Options();
 options.epsilon = 1e-6;
@@ -77,6 +99,7 @@ logReg.train();
 RealMatrix Y_pred = logReg.predictLabelScoreMatrix(data);
 display(Y_pred);
 
+# Output
 # Predicted probability matrix:
    1.0000   0.0000   0.0000 
    0.0000   1.0000   0.0000 
@@ -90,12 +113,77 @@ display(Y_pred);
 
 # -------------------------------------------------------------------------- #
 
+# AdaBoost with Logistic Regression
+
+double[][] data = { {3.5, 4.4, 1.3},
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {5.3, 2.2, -1.5},
+                    {-1.2, 0.4, 3.2} };
+
+int[] labels = {1, 1, -1, -1, -1};
+
+RealMatrix X = new BlockRealMatrix(data);
+X = X.transpose();
+
+Options options = new Options();
+options.epsilon = 1e-5;
+Classifier logReg = new LogisticRegressionMCLBFGS(options);
+logReg.feedData(X);
+logReg.feedLabels(labels);
+logReg.train();
+
+RealMatrix Xt = X;
+double accuracy = Classifier.getAccuracy(labels, logReg.predict(Xt));
+fprintf("Accuracy for logistic regression: %.2f%%\n", 100 * accuracy);
+
+int T = 10;
+Classifier[] weakClassifiers = new Classifier[T];
+for (int t = 0; t < 10; t++) {
+	options = new Options();
+	options.epsilon = 1e-5;
+	weakClassifiers[t] = new LogisticRegressionMCLBFGS(options); 
+}
+Classifier adaBoost = new AdaBoost(weakClassifiers);
+
+adaBoost.feedData(X);
+adaBoost.feedLabels(labels);
+adaBoost.train();
+
+Xt = X.copy();
+display(adaBoost.predictLabelScoreMatrix(Xt));
+display(full(adaBoost.predictLabelMatrix(Xt)));
+display(adaBoost.predict(Xt));
+accuracy = Classifier.getAccuracy(labels, adaBoost.predict(Xt));
+fprintf("Accuracy for AdaBoost with logistic regression: %.2f%%\n", 100 * accuracy);
+
+// Save the model
+String modelFilePath = "AdaBoostModel";
+adaBoost.saveModel(modelFilePath);
+
+// Load the model
+Classifier adaBoost2 = new AdaBoost();
+adaBoost2.loadModel(modelFilePath);
+
+accuracy = Classifier.getAccuracy(labels, adaBoost2.predict(Xt));
+fprintf("Accuracy: %.2f%%\n", 100 * accuracy);
+
+# Output
+Accuracy for logistic regression: 60.00%
+Accuracy for AdaBoost with logistic regression: 100.00%
+Model saved.
+Loading model...
+Model loaded.
+Accuracy: 100.00%
+
+# -------------------------------------------------------------------------- #
+
 # Spectral Clustering
 
 double[][] data = { {3.5, 4.4, 1.3},
-                             {5.3, 2.2, 0.5},
-                             {0.2, 0.3, 4.1},
-                             {-1.2, 0.4, 3.2} };
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {-1.2, 0.4, 3.2} };
 
 SpectralClusteringOptions options = new SpectralClusteringOptions();
 options.nClus = 2;
@@ -123,24 +211,93 @@ Spectral clustering complete.
 
 # -------------------------------------------------------------------------- #
 
-# Limited-memory BFGS in the train() method of the LogisticRegressionMCLBFGS class
+# KMeans
 
-W = repmat(zeros(nFea, 1), new int[]{1, K});
-A = X.transpose().multiply(W);
-V = sigmoid(A);
-G = X.multiply(V.subtract(Y)).scalarMultiply(1.0 / nSample);
-fval = -sum(sum(times(Y, log(plus(V, eps))))).getEntry(0, 0) / nSample;
+double[][] data = { {3.5, 4.4, 1.3},
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {-1.2, 0.4, 3.2} };
+		
+KMeansOptions options = new KMeansOptions();
+options.nClus = 2;
+options.verbose = true;
+options.maxIter = 100;
 
-boolean flags[] = null;
-while (true) {
-    flags = LBFGS.run(G, fval, epsilon, W);
-    if (flags[0])
-        break;
-    A = X.transpose().multiply(W);
-    V = sigmoid(A);
-    fval = -sum(sum(times(Y, log(plus(V, eps))))).getEntry(0, 0) / nSample;
-    if (flags[1])
-        G = rdivide(X.multiply(V.subtract(Y)), nSample);
+KMeans KMeans= new KMeans(options);
+
+KMeans.feedData(data);
+KMeans.clustering(null); // Use null for random initialization
+
+System.out.println("Indicator Matrix:");
+Matlab.printMatrix(Matlab.full(KMeans.getIndicatorMatrix()));
+
+# Output
+Iter 1: sse = 3.604 (0.127 secs)
+KMeans complete.
+Indicator Matrix:
+        1        0  
+        1        0  
+        0        1  
+
+# -------------------------------------------------------------------------- #
+
+# NMF
+
+double[][] data = { {3.5, 4.4, 1.3},
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {1.2, 0.4, 3.2} };
+
+NMFOptions NMFOptions = new NMFOptions();
+NMFOptions.nClus = 2;
+NMFOptions.maxIter = 50;
+NMFOptions.verbose = true;
+NMFOptions.calc_OV = false;
+NMFOptions.epsilon = 1e-5;
+Clustering NMF = new NMF(NMFOptions);
+
+NMF.feedData(data);
+NMF.clustering(null); // If null, KMeans will be used for initialization
+
+System.out.println("Basis Matrix:");
+Matlab.printMatrix(Matlab.full(NMF.getCenters()));
+
+System.out.println("Indicator Matrix:");
+Matlab.printMatrix(Matlab.full(NMF.getIndicatorMatrix()));
+
+# Output
+Iter 1: sse = 3.327 (0.149 secs)
+KMeans complete.
+Iteration 10, delta G: 0.000103
+Converge successfully!
+Basis Matrix:
+   1.5322   4.3085  
+   0.5360   4.4548  
+   4.7041   0.2124  
+   3.6581   0.9194  
+
+Indicator Matrix:
+        0   1.0137  
+   0.0261   0.7339  
+   0.8717   0.0001  
+		
+# -------------------------------------------------------------------------- #
+		
+# Limited-memory BFGS
+
+double fval = ...; // Initial objective function value
+double epsilon = ...; // Convergence tolerance
+RealMatrix G = ...; // Gradient at the initial matrix (vector) you want to optimize
+RealMatrix W = ...; // Initial matrix (vector) you want to optimize
+while (true) { 
+	flags = LBFGS.run(G, fval, epsilon, W); // Update W in place
+	if (flags[0]) { // flags[0] indicates if L-BFGS converges
+		break; 
+	}
+	fval = ...; // Compute the new objective function value at the updated W
+	if (flags[1]) { // flags[1] indicates if gradient at the updated W is required
+		G = ...; // Compute the gradient at the new W
+	}
 }
 
 # -------------------------------------------------------------------------- #
@@ -148,12 +305,12 @@ while (true) {
 # LASSO
 
 double[][] data = {{1, 2, 3, 2},
-                            {4, 2, 3, 6},
-                            {5, 1, 2, 1}};
+                   {4, 2, 3, 6},
+                   {5, 1, 2, 1}};
 
 double[][] depVars = {{3, 2},
-                                  {2, 3},
-                                  {1, 4}};
+                      {2, 3},
+                      {1, 4}};
 
 Options options = new Options();
 options.maxIter = 600;
@@ -176,7 +333,7 @@ display(Yt);
 # Output
 Projection matrix:
 -0.2295    0.5994  
-          0             0  
+      0         0  
  1.1058    0.5858  
 -0.0631   -0.1893  
 
@@ -190,11 +347,11 @@ Predicted dependent variables:
 # LDA
 
 int[][] documents = { {1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 6},
-                                 {2, 2, 4, 2, 4, 2, 2, 2, 2, 4, 2, 2},
-                                 {1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 0},
-                                 {5, 6, 6, 2, 3, 3, 6, 5, 6, 2, 2, 6, 5, 6, 6, 6, 0},
-                                 {2, 2, 4, 4, 4, 4, 1, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 0},
-                                 {5, 4, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2}};
+                      {2, 2, 4, 2, 4, 2, 2, 2, 2, 4, 2, 2},
+                      {1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 0},
+                      {5, 6, 6, 2, 3, 3, 6, 5, 6, 2, 2, 6, 5, 6, 6, 6, 0},
+                      {2, 2, 4, 4, 4, 4, 1, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 0},
+                      {5, 4, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2} };
        
 LDAOptions LDAOptions = new LDAOptions();
 LDAOptions.nTopic = 2;
@@ -239,13 +396,13 @@ Document--topic associations:
 # Joint l_{2,1}-norms minimization: Supervised Feature Selection
 
 double[][] data = { {3.5, 4.4, 1.3},
-                             {5.3, 2.2, 0.5},
-                             {0.2, 0.3, 4.1},
-                             {-1.2, 0.4, 3.2} };
+                    {5.3, 2.2, 0.5},
+                    {0.2, 0.3, 4.1},
+                    {-1.2, 0.4, 3.2} };
 
 double[][] labels = { {1, 0, 0},
-                               {0, 1, 0},
-                               {0, 0, 1} };
+                      {0, 1, 0},
+                      {0, 0, 1} };
 
 SupervisedFeatureSelection robustFS = new JointL21NormsMinimization(2.0);
 robustFS.feedData(data);
@@ -296,7 +453,7 @@ int[][] Qs = data[1];
 // Train HMM
 HMM HMM = new HMM(numStates, numObservations, epsilon, maxIter);
 HMM.feedData(Os);
-HMM.feedLabels(Qs);
+HMM.feedLabels(Qs); // If not given, random initialization will be used
 HMM.train();
 HMM.saveModel("HMMModel.dat");
 
@@ -603,6 +760,174 @@ Computation time: 0.048000 seconds
 
 # -------------------------------------------------------------------------- #
 
+# Matrix Recovery: Robust PCA
+
+int m = 8;
+int r = m / 4;
+
+RealMatrix L = randn(m, r);
+RealMatrix R = randn(m, r);
+
+RealMatrix A_star = mtimes(L, R.transpose());
+RealMatrix E_star = zeros(size(A_star));
+int[] indices = randperm(m * m);
+int nz = m * m / 20;
+int[] nz_indices = new int[nz];
+for (int i = 0; i < nz; i++) {
+	nz_indices[i] = indices[i] - 1;
+}
+RealMatrix E_vec = vec(E_star);
+setSubMatrix(E_vec, nz_indices, new int[] {0}, (minus(rand(nz, 1), 0.5).scalarMultiply(100)));
+E_star = reshape(E_vec, size(E_star));
+
+// Input
+RealMatrix D = A_star.add(E_star);
+double lambda = 1 * Math.pow(m, -0.5);
+
+// Run Robust PCA
+RobustPCA robustPCA = new RobustPCA(lambda);
+robustPCA.feedData(D);
+robustPCA.run();
+
+RealMatrix A_hat = robustPCA.GetLowRankEstimation();
+RealMatrix E_hat = robustPCA.GetErrorMatrix();
+
+fprintf("A*:\n");
+disp(A_star, 4);
+fprintf("A^:\n");
+disp(A_hat, 4);
+fprintf("E*:\n");
+disp(E_star, 4);
+fprintf("E^:\n");
+disp(E_hat, 4);
+fprintf("rank(A*): %d\n", rank(A_star));
+fprintf("rank(A^): %d\n", rank(A_hat));
+fprintf("||A* - A^||_F: %.4f\n", norm(A_star.subtract(A_hat), "fro"));
+fprintf("||E* - E^||_F: %.4f\n", norm(E_star.subtract(E_hat), "fro"));
+
+# Output
+
+A*:
+  -0.3167  -0.9318  -0.0798  -0.7203  -0.8664  -0.6440   1.0025  -0.0680  
+  -0.6284   0.9694  -0.4561   0.3986   0.5307   0.9091   0.0128   0.1906  
+  -1.4436   2.5714  -1.0841   1.1390   1.4941   2.3557  -0.2121   0.4776  
+   1.6382   1.8747   0.7239   1.8157   2.1306   1.0458  -3.1202   0.0115  
+   2.0220  -3.8960   1.5496  -1.7862  -2.3277  -3.5280   0.5034  -0.7029  
+   0.1649  -0.5466   0.1505  -0.2941  -0.3726  -0.4653   0.2016  -0.0837  
+  -0.3799  -0.9994  -0.1082  -0.7872  -0.9449  -0.6807   1.1196  -0.0679  
+   0.4860   0.1538   0.2572   0.2777   0.3109  -0.0019  -0.6435  -0.0430  
+
+A^:
+  -0.3167  -0.9318  -0.0798  -0.7203  -0.8664  -0.6440   1.0025  -0.0680  
+  -0.6284   0.9694  -0.4561   0.3986   0.5307   0.9091   0.0128   0.1906  
+  -1.4436   2.5714  -1.0841   1.1390   1.4941   2.3557  -0.2121   0.4776  
+   0.9864   1.6651   0.3792   1.4410   1.7109   1.0458  -2.2548   0.0688  
+   2.0220  -3.8960   1.5496  -1.7862  -2.3277  -3.5280   0.5034  -0.7029  
+   0.1649  -0.5466   0.1505  -0.2941  -0.3726  -0.4653   0.2016  -0.0837  
+  -0.3799  -0.9994  -0.1082  -0.7872  -0.9449  -0.6807   1.1196  -0.0679  
+   0.4860   0.1538   0.2572   0.2777   0.3109  -0.0019  -0.6435  -0.0430  
+
+E*:
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0  45.2970        0        0  
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0        0        0        0  
+  26.9119        0        0        0        0        0        0        0  
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0  -9.2397        0        0  
+
+E^:
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0  45.2970        0        0  
+        0        0        0        0        0        0        0        0  
+   0.6518   0.2097   0.3447   0.3747   0.4196        0  -0.8654  -0.0574  
+        0        0        0        0        0        0        0        0  
+  26.9119        0        0        0        0        0        0        0  
+        0        0        0        0        0        0        0        0  
+        0        0        0        0        0  -9.2397        0        0  
+
+rank(A*): 2
+rank(A^): 2
+||A* - A^||_F: 1.2870
+||E* - E^||_F: 1.2870
+
+# -------------------------------------------------------------------------- #
+
+# Matrix Completion
+
+int m = 6;
+int r = 1;
+int p = (int) Math.round(m * m * 0.3);
+
+RealMatrix L = randn(m, r);
+RealMatrix R = randn(m, r);
+RealMatrix A_star = mtimes(L, R.transpose());
+
+int[] indices = randperm(m * m);
+minusAssign(indices, 1);
+indices = linearIndexing(indices, colon(0, p - 1));
+
+RealMatrix Omega = zeros(size(A_star));
+linearIndexingAssignment(Omega, indices, 1);
+
+RealMatrix D = zeros(size(A_star));
+linearIndexingAssignment(D, indices, linearIndexing(A_star, indices));
+		
+RealMatrix E_star = D.subtract(A_star);
+logicalIndexingAssignment(E_star, Omega, 0);
+
+// Run matrix completion
+MatrixCompletion matrixCompletion = new MatrixCompletion();
+matrixCompletion.feedData(D);
+matrixCompletion.feedIndices(Omega);
+matrixCompletion.run();
+
+// Output
+RealMatrix A_hat = matrixCompletion.GetLowRankEstimation();
+
+fprintf("A*:\n");
+disp(A_star, 4);
+fprintf("A^:\n");
+disp(A_hat, 4);
+fprintf("D:\n");
+disp(D, 4);
+fprintf("rank(A*): %d\n", rank(A_star));
+fprintf("rank(A^): %d\n", rank(A_hat));
+fprintf("||A* - A^||_F: %.4f\n", norm(A_star.subtract(A_hat), "fro"));
+
+# Output
+
+A*:
+   0.3070  -0.3445  -0.2504   0.0054   0.4735  -0.0825  
+   0.0081  -0.0091  -0.0066   0.0001   0.0125  -0.0022  
+   1.4322  -1.6069  -1.1681   0.0252   2.2090  -0.3848  
+  -0.6194   0.6950   0.5052  -0.0109  -0.9554   0.1664  
+  -0.3616   0.4057   0.2949  -0.0064  -0.5577   0.0971  
+  -0.3382   0.3795   0.2758  -0.0059  -0.5216   0.0909  
+
+A^:
+   0.2207   0.0000  -0.2504   0.0039   0.4735        0  
+   0.0081   0.0000  -0.0066   0.0001   0.0125        0  
+   1.0296   0.0000  -1.1681   0.0181   2.2090        0  
+  -0.6194  -0.0000   0.5052  -0.0109  -0.9554        0  
+        0        0        0        0        0        0  
+  -0.2431  -0.0000   0.2758  -0.0043  -0.5216        0  
+
+D:
+        0        0        0        0   0.4735        0  
+        0        0  -0.0066   0.0001   0.0125        0  
+        0        0  -1.1681        0   2.2090        0  
+  -0.6194        0   0.5052  -0.0109        0        0  
+        0        0        0        0        0        0  
+        0        0   0.2758        0  -0.5216        0  
+
+rank(A*): 1
+rank(A^): 2
+||A* - A^||_F: 2.0977
+
+# -------------------------------------------------------------------------- #
+
 Features:
     A general framework is provided for users to implement machine learning tools from MATLAB code.
     jml.clustering package implements clustering related models.
@@ -613,10 +938,11 @@ Features:
     tmj.kernel compute kernel matrix between two matrices, currently supported kernel types are linear, poly, rbf, and cosine.
     jml.manifold implements manifold learning related functions, i.e., computation of adjacency matrix and Laplacian matrix. This package is very useful for semi-supervised learning.
     jml.matlab implements some frequently used Matlab matrix functions with the same function input signature such as sort, sum, max, min, kron, vec, repmat, reshape, and colon. Thus Matlab code could be more easily converted to Java code.
-    jml.optimization provides implementations for several most important general purpose optimization algorithm, currently supported optimization tools are limited-memory BFGS, projected limited-memory BFGS (non-negative constrained or bound constrained), nonlinear conjugate gradient, and primal-dual interior-point method.
+    jml.optimization provides implementations for several most important general purpose optimization algorithms.
     jml.feature.selection provides feature selection algorithms (supervised, unsupervised, or semi-supervised).
     jml.sequence implements sequential learning algorithms (e.g., HMM or CRF).
     jml.random implements random distributions. Currently supported is multivariate Gaussian distribution.
+	jml.recovery implements matrix recovery and matrix completion methods.
     Feature engineering and model training are separated completely, which increases the applicability and flexibility of the included learning models and methods in the library. For feature generation, we suggest using TextProcessor package.
     Well documented source code.
 
@@ -626,10 +952,10 @@ Dependencies:
 JML depends on Apache Commons-Math library (commons-math-2.2 or later) and LIBLINEAR.
 
 Note:
-I choose Commons-Math because it supports both dense and sparse matrix and it has a good numerical computation performance by using BlockRealMatrix class in term of both speed and memory. For moderate scaled data, JMLBLAS is faster than JML because it exploits jblas library for basic matrix operations.
+I choose Commons-Math because it supports both dense and sparse matrix and it has a good numerical computation performance by using BlockRealMatrix class in term of both speed and memory. For moderate scaled data,  JMLBLAS is faster than JML because it exploits jblas library for basic matrix operations but JMLBLAS doesn't support sparse matrices.
 
 -----------------------------------
 Author: Mingjie Qian
-Version: 2.4
-Date: Mar. 12th, 2013
+Version: 2.8
+Date: Nov. 22nd, 2013
  

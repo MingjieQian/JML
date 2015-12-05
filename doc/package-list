@@ -9,10 +9,12 @@ jml.kernel
 jml.manifold
 jml.matlab
 jml.matlab.utils
+jml.online.classification
 jml.operation
 jml.optimization
 jml.options
 jml.random
+jml.recovery
 jml.regression
 jml.sequence
 jml.subspace
